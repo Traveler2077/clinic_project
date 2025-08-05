@@ -50,9 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- 註冊表單 -->
     <form method="POST" action="">
-        姓名：<input type="text" name="name" required><br><br>
-        Email：<input type="email" name="email" required><br><br>
-        密碼：<input type="password" name="password" required><br><br>
+        姓名:<input type="text" name="name" required><br><br>
+        Email:<input type="email" name="email" required><br><br>
+        密碼:<input type="password" name="password" required><br><br>
         <button type="submit">註冊</button>
     </form>
 </body>
