@@ -1,6 +1,8 @@
 <?php
 require_once 'db.php'; // 引入資料庫連線
 
+$message = '';
+
 // 如果是從表單送出來的資料，就進入處理區塊
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];       // 使用者輸入的名稱
