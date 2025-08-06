@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($_POST['register'])) {
         // 取得註冊用的表單欄位
         $name = $_POST['name'];
+        $pet_name = $_POST['pet_name'];
         $email = $_POST['email'];
         $password = $_POST['password'];
         $phone = $_POST['phone'] ;
@@ -58,16 +59,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // 將新會員資料寫入資料庫，角色預設為 user
             $stmt = $pdo->prepare("
-            INSERT INTO users (name, email, password, phone, address, role)
-            VALUES (:name, :email, :password, :phone, :address, :role)
+            INSERT INTO users (name, pet_name, email, password, phone, address, role)
+            VALUES (:name,:pet_name, :email, :password, :phone, :address, :role)
             ");
             $stmt->execute([
                 'name' => $name,
+                'pet_name' => $pet_name,
                 'email' => $email,
                 'password' => $hashedPassword,
                 'phone' => $phone,
                 'address' => $address,
-                'role' => 'user'
+                'role' => 'member'
             ]);
             
             // 提示成功訊息
@@ -84,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>登入 / 註冊</title>
 </head>
 <body>
-    
+
     <!-- 顯示訊息區塊 -->
     <p style="color:red"><?= $message ?></p>
 
@@ -109,6 +111,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="POST" action="">
         <label>姓名：</label><br>
         <input type="text" name="name" required><br><br>
+
+        <label>寵物姓名：</label><br>
+        <input type="text" name="pet_name" required><br><br>
 
         <label>Email：</label><br>
         <input type="email" name="email" required><br><br>
