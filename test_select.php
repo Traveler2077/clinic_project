@@ -17,7 +17,10 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <tr>
         <th>ID</th>
         <th>名稱</th>
+        <th>寵物名字</th>
         <th>Email</th>
+        <th>電話</th>
+        <th>地址</th>
         <th>角色</th>
         <th>註冊時間</th>
     </tr>
@@ -25,7 +28,10 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <tr>
             <td><?= htmlspecialchars($user['id']) ?></td>
             <td><?= htmlspecialchars($user['name']) ?></td>
+            <td><?= htmlspecialchars($user['pet_name']) ?></td>
             <td><?= htmlspecialchars($user['email']) ?></td>
+            <td><?= htmlspecialchars($user['phone']) ?></td>
+            <td><?= htmlspecialchars($user['address']) ?></td>
             <td><?= htmlspecialchars($user['role']) ?></td>
             <td><?= htmlspecialchars($user['created_at']) ?></td>
         </tr>
