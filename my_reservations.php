@@ -10,6 +10,11 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 $rows = [];
+$statusMap = [
+    'booked' => '已預約',
+    'cancelled' => '已取消',
+    'completed' => '已完成'
+];
 
 // 從資料庫取得該會員的預約紀錄
 $stmt = $pdo->prepare("
@@ -24,12 +29,17 @@ $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // 預先處理成 $rows（含是否可取消）
 if (!empty($reservations)) {
     foreach ($reservations as $res) {
+        if (isset($statusMap[$res['status']])) {
+            $statusText = $statusMap[$res['status']];
+        } else {
+            $statusText = $res['status'];
+        }
         $rows[] = [
             'id' => $res['id'],
             'pet_name' => htmlspecialchars($res['pet_name']),
             'date' => htmlspecialchars($res['date']),
             'time' => htmlspecialchars($res['time']),
-            'status' => htmlspecialchars($res['status']),
+            'status' => $statusText,
             'can_cancel' => ($res['status'] === 'booked' && strtotime($res['date']) > strtotime(date('Y-m-d')))
         ];
     }
