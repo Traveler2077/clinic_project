@@ -8,25 +8,28 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$message = '';
 $user_id = $_SESSION['user_id'];
 $rows = [];
+// 狀態顯示對應中文
 $statusMap = [
     'booked' => '已預約',
     'cancelled' => '已取消',
     'completed' => '已完成'
 ];
 
-// 從資料庫取得該會員的預約紀錄
+// 從資料庫取得最近 5 筆預約紀錄（依日期、時間倒序）
 $stmt = $pdo->prepare("
     SELECT * 
     FROM reservations 
     WHERE user_id = :user_id 
-    ORDER BY date, time
+    ORDER BY date DESC, time DESC
+    LIMIT 5
 ");
 $stmt->execute(['user_id' => $user_id]);
 $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// 預先處理成 $rows（含是否可取消）
+// 預先處理成 $rows 陣列（含轉換狀態、可否取消）
 if (!empty($reservations)) {
     foreach ($reservations as $res) {
         if (isset($statusMap[$res['status']])) {
@@ -44,17 +47,26 @@ if (!empty($reservations)) {
         ];
     }
 }
+
+// 若恰好顯示 5 筆，顯示提醒訊息
+if (count($rows) === 5) {
+    $message = '（僅顯示最近 5 筆預約資料）';
+}
 ?>
 
+<!-- HTML 表單畫面 -->
 <!DOCTYPE html>
-<html>
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <title>我的預約紀錄</title>
 </head>
 <body>
     <h2>我的預約紀錄</h2>
-    <table>
+    <?php if (!empty($message)): ?>
+        <p><?= $message ?></p>
+    <?php endif; ?>
+        <table>
         <thead>
             <tr>
                 <th>寵物名</th>
