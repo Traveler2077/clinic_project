@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // 設定 Session，讓使用者保持登入狀態
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['name'] = $user['name'];
-            $_SESSION['role'] = $user['role']; // user or admin
+            $_SESSION['role'] = $user['role']; // member or admin
 
             // 登入成功後導回首頁
             header("Location: index.php");
