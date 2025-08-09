@@ -88,7 +88,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 
     <!-- 顯示訊息區塊 -->
-    <p style="color:red"><?= $message ?></p>
+    <?php if ($message): ?>
+        <p style="color:red"><?= htmlspecialchars($message) ?></p>
+    <?php endif; ?>
 
     <h2>會員登入 / 註冊</h2>
 
