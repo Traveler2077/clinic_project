@@ -50,10 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 's'  => $action,
                 'id' => $id
             ]);
-            // rowCount() > 0 代表有成功更新（找不到 id 或原狀態相同則可能為 0）
             if ($stmt->rowCount() > 0) {
                 $message = '✅ 已更新預約狀態';
-            } else 
+            } else {
                 $message = '⚠️ 找不到該筆預約或狀態未變更';
             }
         } catch (Throwable $e) {
@@ -91,7 +90,20 @@ try {
             ORDER BY r.date DESC, r.time DESC, r.id DESC
             LIMIT 50
         ");
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // 統一轉義
+    foreach ($results as $r) {
+        $rows[] = [
+            'id'         => htmlspecialchars($r['id'], ENT_QUOTES, 'UTF-8'),
+            'user_name'  => htmlspecialchars($r['user_name'], ENT_QUOTES, 'UTF-8'),
+            'user_email' => htmlspecialchars($r['user_email'], ENT_QUOTES, 'UTF-8'),
+            'pet_name'   => htmlspecialchars($r['pet_name'], ENT_QUOTES, 'UTF-8'),
+            'date'       => htmlspecialchars($r['date'], ENT_QUOTES, 'UTF-8'),
+            'time'       => htmlspecialchars($r['time'], ENT_QUOTES, 'UTF-8'),
+            'status'     => htmlspecialchars(($statusMap[$r['status']] ?? $r['status']), ENT_QUOTES, 'UTF-8')
+        ];
+    }
 } catch (Throwable $e) {
     $rows = [];
     // 若列表載入失敗、但上面剛好沒有任何訊息，就顯示一個通用的
@@ -99,45 +111,48 @@ try {
         $message = '❌ 載入預約清單時發生錯誤';
     }
 }
+
+$safeMessage    = '';
+$safeFilterDate = '';
+
+if ($message !== '') {
+    $safeMessage = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
+}
+if ($filterDate !== '') {
+    $safeFilterDate = htmlspecialchars($filterDate, ENT_QUOTES, 'UTF-8');
+}
+
 ?>
 
 <!doctype html>
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8">
-  <title>後台｜預約管理（極簡）</title>
+  <title>後台｜預約管理</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 
   <h1>預約管理</h1>
-
   <p>
     <a href="index.php">回控制台</a> |
     <a href="../logout.php">登出</a>
   </p>
 
-  <!-- 提示訊息（使用 htmlspecialchars 跳脫） -->
-  <?php if ($message !== ''): ?>
-    <p><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></p>
+  <?php if ($safeMessage !== ''): ?>
+    <div><?= $safeMessage ?></div>
   <?php endif; ?>
 
-  <!-- 篩選：日期（不輸入日期時 → 顯示最近 50 筆） -->
   <form method="get" action="">
-    <label>日期查詢：</label>
-    <input type="date" name="date" value="<?= htmlspecialchars($filterDate, ENT_QUOTES, 'UTF-8') ?>">
+    <label>日期：</label>
+    <input type="date" name="date" value="<?= $safeFilterDate ?>">
     <button type="submit">查詢</button>
-    <?php if ($filterDate !== ''): ?>
-      <!-- 重新回到同頁但不帶參數，就等於清除篩選 -->
+    <?php if ($safeFilterDate !== ''): ?>
       <a href="reservations.php">清除篩選</a>
     <?php endif; ?>
-    <small>（不輸入日期時，預設顯示最近 50 筆）</small>
   </form>
 
-  <hr>
-
-  <!-- 預約列表 -->
-  <table border="1" cellpadding="6" cellspacing="0">
+  <table border="1" cellpadding="4" cellspacing="0" width="100%">
     <thead>
       <tr>
         <th>ID</th>
@@ -151,39 +166,38 @@ try {
       </tr>
     </thead>
     <tbody>
-    <?php if (!empty($rows)): ?>
-      <?php foreach ($rows as $r): ?>
-        <tr>
-          <td><?= htmlspecialchars($r['id'], ENT_QUOTES, 'UTF-8') ?></td>
-          <td><?= htmlspecialchars($r['user_name'], ENT_QUOTES, 'UTF-8') ?></td>
-          <td><?= htmlspecialchars($r['user_email'], ENT_QUOTES, 'UTF-8') ?></td>
-          <td><?= htmlspecialchars($r['pet_name'], ENT_QUOTES, 'UTF-8') ?></td>
-          <td><?= htmlspecialchars($r['date'], ENT_QUOTES, 'UTF-8') ?></td>
-          <td><?= htmlspecialchars($r['time'], ENT_QUOTES, 'UTF-8') ?></td>
-          <td><?= htmlspecialchars(($statusMap[$r['status']] ?? $r['status']), ENT_QUOTES, 'UTF-8') ?></td>
-          <td>
-            <!-- 三種狀態按鈕（POST 到同一頁）：用 action 指定要改成的狀態 -->
-            <form method="post" action="" onsubmit="return confirm('將狀態改為【已預約】?');" style="display:inline;">
-              <input type="hidden" name="id" value="<?= htmlspecialchars($r['id'], ENT_QUOTES, 'UTF-8') ?>">
-              <input type="hidden" name="action" value="booked">
-              <button type="submit">設為已預約</button>
-            </form>
-            <form method="post" action="" onsubmit="return confirm('將狀態改為【已取消】?');" style="display:inline;">
-              <input type="hidden" name="id" value="<?= htmlspecialchars($r['id'], ENT_QUOTES, 'UTF-8') ?>">
-              <input type="hidden" name="action" value="cancelled">
-              <button type="submit">設為已取消</button>
-            </form>
-            <form method="post" action="" onsubmit="return confirm('將狀態改為【已完成】?');" style="display:inline;">
-              <input type="hidden" name="id" value="<?= htmlspecialchars($r['id'], ENT_QUOTES, 'UTF-8') ?>">
-              <input type="hidden" name="action" value="completed">
-              <button type="submit">設為已完成</button>
-            </form>
-          </td>
-        </tr>
-      <?php endforeach; ?>
-    <?php else: ?>
-      <tr><td colspan="8">沒有符合條件的資料</td></tr>
-    <?php endif; ?>
+      <?php if (!empty($rows)): ?>
+        <?php foreach ($rows as $row): ?>
+          <tr>
+            <td><?= $row['id'] ?></td>
+            <td><?= $row['user_name'] ?></td>
+            <td><?= $row['user_email'] ?></td>
+            <td><?= $row['pet_name'] ?></td>
+            <td><?= $row['date'] ?></td>
+            <td><?= $row['time'] ?></td>
+            <td><?= $row['status'] ?></td>
+            <td>
+              <form method="post" action="" style="display:inline">
+                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                <input type="hidden" name="action" value="booked">
+                <button type="submit">設為已預約</button>
+              </form>
+              <form method="post" action="" style="display:inline">
+                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                <input type="hidden" name="action" value="cancelled">
+                <button type="submit">設為已取消</button>
+              </form>
+              <form method="post" action="" style="display:inline">
+                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                <input type="hidden" name="action" value="completed">
+                <button type="submit">設為已完成</button>
+              </form>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <tr><td colspan="8">沒有符合條件的資料</td></tr>
+      <?php endif; ?>
     </tbody>
   </table>
 

@@ -4,6 +4,12 @@ require_once 'db.php';
 require_once __DIR__ . '/includes/auth_guard.php'; // 引入共用守門
 require_login(); // 統一檢查：未登入 → 回首頁
 
+// 如果沒有登入，導回登入頁
+if (!isset($_SESSION['user_id'])) {
+    header('Location: auth.php');
+    exit();
+}
+
 // 統一 PHP 端時區
 date_default_timezone_set('Asia/Taipei');
 // 統一資料庫端時區，避免用 CURDATE()/CURTIME() 判斷時與 DB 時區不同
