@@ -4,6 +4,9 @@ require_once 'db.php'; // 這裡的 db.php 會建立 $pdo 連線
 require_once __DIR__ . '/includes/auth_guard.php'; // 引入共用守門
 require_login(); // 統一檢查：未登入 → 回首頁
 
+// 統一 PHP 端時區
+date_default_timezone_set('Asia/Taipei');
+
 $message = '';
 $user_id = $_SESSION['user_id'];
 $rows = [];
@@ -34,11 +37,11 @@ if (!empty($reservations)) {
             $statusText = $res['status'];
         }
         $rows[] = [
-            'id' => htmlspecialchars($res['id']),
-            'pet_name' => htmlspecialchars($res['pet_name']),
-            'date' => htmlspecialchars($res['date']),
-            'time' => htmlspecialchars($res['time']),
-            'status' => htmlspecialchars($statusText),
+            'id' => htmlspecialchars($res['id'], ENT_QUOTES, 'UTF-8'),
+            'pet_name' => htmlspecialchars($res['pet_name'], ENT_QUOTES, 'UTF-8'),
+            'date' => htmlspecialchars($res['date'], ENT_QUOTES, 'UTF-8'),
+            'time' => htmlspecialchars($res['time'], ENT_QUOTES, 'UTF-8'),
+            'status' => htmlspecialchars($statusText, ENT_QUOTES, 'UTF-8'),
             'can_cancel' => ($res['status'] === 'booked' && strtotime($res['date']) > strtotime(date('Y-m-d')))
         ];
     }
