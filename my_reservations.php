@@ -34,7 +34,7 @@ if (!empty($reservations)) {
             $statusText = $res['status'];
         }
         $rows[] = [
-            'id' => $res['id'],
+            'id' => htmlspecialchars($res['id']),
             'pet_name' => htmlspecialchars($res['pet_name']),
             'date' => htmlspecialchars($res['date']),
             'time' => htmlspecialchars($res['time']),
@@ -48,6 +48,7 @@ if (!empty($reservations)) {
 if (count($rows) === 5) {
     $message = '（僅顯示最近 5 筆預約資料）';
 }
+$safe_message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
 ?>
 
 <!-- HTML 表單畫面 -->
@@ -59,8 +60,8 @@ if (count($rows) === 5) {
 </head>
 <body>
     <h2>我的預約紀錄</h2>
-    <?php if (!empty($message)): ?>
-        <p><?= htmlspecialchars($message)?></p>
+    <?php if (!empty($safe_message)): ?>
+        <p><?= ($safe_message)?></p>
     <?php endif; ?>
         <table>
         <thead>

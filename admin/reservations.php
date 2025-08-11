@@ -25,6 +25,8 @@ $statusMap = [
     'cancelled' => '已取消',
     'completed' => '已完成',
 ];
+$safeMessage    = '';
+$safeFilterDate = '';
 
 
 // ===== 讀取 GET 參數（日期篩選，可空白） =====
@@ -111,16 +113,8 @@ try {
         $message = '❌ 載入預約清單時發生錯誤';
     }
 }
-
-$safeMessage    = '';
-$safeFilterDate = '';
-
-if ($message !== '') {
-    $safeMessage = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
-}
-if ($filterDate !== '') {
-    $safeFilterDate = htmlspecialchars($filterDate, ENT_QUOTES, 'UTF-8');
-}
+$safeMessage = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
+$safeFilterDate = htmlspecialchars($filterDate, ENT_QUOTES, 'UTF-8');
 
 ?>
 

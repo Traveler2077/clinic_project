@@ -4,12 +4,6 @@ require_once 'db.php';
 require_once __DIR__ . '/includes/auth_guard.php'; // 引入共用守門
 require_login(); // 統一檢查：未登入 → 回首頁
 
-// 如果沒有登入，導回登入頁
-if (!isset($_SESSION['user_id'])) {
-    header('Location: auth.php');
-    exit();
-}
-
 // 統一 PHP 端時區
 date_default_timezone_set('Asia/Taipei');
 // 統一資料庫端時區，避免用 CURDATE()/CURTIME() 判斷時與 DB 時區不同
@@ -139,6 +133,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+$safe_color = htmlspecialchars($color, ENT_QUOTES, 'UTF-8');
+$safe_message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
+$safe_minDate = htmlspecialchars($minDate, ENT_QUOTES, 'UTF-8');
+$safe_maxDate = htmlspecialchars($maxDate, ENT_QUOTES, 'UTF-8');
+$safe_times = [];
+foreach ($times as $t) {
+    $safe_times[] = [
+        'value' => htmlspecialchars($t['value'], ENT_QUOTES, 'UTF-8'),
+        'label' => htmlspecialchars($t['label'], ENT_QUOTES, 'UTF-8')
+    ];
+}
 ?>
 
 <!DOCTYPE html>
@@ -152,34 +157,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <h2>📅 預約診療</h2>
 
 <!-- 顯示訊息 -->
-<?php if (!empty($message)): ?>
-    <p style="color: <?= htmlspecialchars($color) ?>;">
-        <?= htmlspecialchars($message) ?>
+<?php if (!empty($safe_message)): ?>
+    <p style="color: <?= $safe_color ?>;">
+        <?= $safe_message ?>
     </p>
 <?php endif; ?>
 
 <!-- 預約表單 -->
 <form method="POST" action="">
- 
     <label>會員姓名：</label><br>
-    <input type="text" value="<?php echo $safe_name; ?>" readonly><br><br>
+    <input type="text" value="<?= $safe_name ?>" readonly><br><br>
 
     <label>寵物姓名：</label><br>
     <input type="text" name="pet_name" required><br><br>
 
     <label>預約日期：</label><br>
     <input type="date" name="date" 
-            min="<?= htmlspecialchars($minDate) ?>"
-            max="<?= htmlspecialchars($maxDate) ?>"
-            required><br><br>
+        min="<?= $safe_minDate ?>" 
+        max="<?= $safe_maxDate ?>" 
+        required><br><br>
 
     <label>預約時段（每小時）：</label><br>
     <select name="time" required>
         <option value="">請選擇時間</option>
-        <?php foreach ($times as $t): ?>
-            <option value="<?= htmlspecialchars($t['value']) ?>">
-                <?= htmlspecialchars($t['label']) ?>
-            </option>
+        <?php foreach ($safe_times as $t): ?>
+            <option value="<?= $t['value'] ?>"><?= $t['label'] ?></option>
         <?php endforeach; ?>
     </select><br><br>
 
