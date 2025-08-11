@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2025-08-06 18:36:33
+-- 產生時間： 2025-08-11 08:35:22
 -- 伺服器版本： 10.4.32-MariaDB
 -- PHP 版本： 8.2.12
 
@@ -44,15 +44,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `pet_name`, `email`, `password`, `role`, `created_at`, `phone`, `address`) VALUES
-(1, 'Men', '', '5566777@3q56', '$2y$10$FtH0IEjeOo3MvuHo3CUWce5OzaLj0EJOfx5HSkzQlRk3b8DTrxeVS', 'member', '2025-08-05 09:15:25', '', NULL),
-(5, 'women', '', '5566777@3q566', '$2y$10$hNessbAEvTVFjZIFLzFfcuCSWqFRaFAEvj/mOgCFIWZCdPE74XfFG', 'member', '2025-08-05 09:59:42', '', NULL),
-(9, 'women2', '', '7876710@gmail.com', '$2y$10$A94Pam.FZYfQ.bYQc6l0e.kNu0hrj8OFf01ulbngyeDA2IsyFMh8y', 'member', '2025-08-05 10:05:08', '', NULL),
-(13, 'women', '', '5566777@3q569', '$2y$10$dwppwEcc0UuBHjUAd.MsMubk3fsMya02WhcMxvss0s6iWuKS9mmx.', 'member', '2025-08-05 10:12:33', '', NULL),
-(20, 'men', '', '123456@123456', '$2y$10$YE8eLrTPvzS3PitXKKtbJeKeDyZ9GkDrcnIoTtYoTs5YbrKTEm04C', 'member', '2025-08-06 08:35:16', '', NULL),
-(21, '123', '', '123@123', '$2y$10$8Ea3SDn47sipK4d6GSeEHOFAOF8vTeV3JkSa3q2UfAPUwtHKEBoPm', '', '2025-08-06 14:30:04', '123456789', ''),
-(22, '456', '', '456@456', '$2y$10$oieDaFcvZgDkCit/5JZra.gAV8IhCo8vZf41Q95e6JiTWl5uhyDQ6', '', '2025-08-06 14:30:50', '123456789', ''),
-(23, '789', '', '789@789', '$2y$10$Ms/wYCFFP/QStkmpER5Aa.H31dDBklDNF9xPk7EKzg1XgvawpDgme', '', '2025-08-06 14:49:42', '123456789', '3654'),
-(24, '741', '', '741@741', '$2y$10$6m16mhbT/BGJAoC0xVJEC.PVQTblGTYBr6yIQT2aCW2MJww0U5GKy', 'member', '2025-08-06 14:51:37', '123456789', '456789');
+(26, 'admin', '123', 'admin@123', '$2y$10$DxiFwLinpQ/xIYR.D22zV.x08FBnO.GetHumMCK3b5Ib16gDQfWYW', 'admin', '2025-08-11 05:37:40', '09123456', '1234156'),
+(27, 'men1', '123', '123@123', '$2y$10$qI7yAkIqRoFAhh3VjXEOo.lh2IeORcEjiBCSjxoVqZkfKh0WLJCQS', 'member', '2025-08-11 05:38:34', '123456', '123456'),
+(28, 'women1', '123', '456@456', '$2y$10$yBENUuJQATFo1LDj/SfG9OXO1bt2RjlBnOAhVktyKYL1my7oJYWpG', 'member', '2025-08-11 05:39:05', '123456', '123456');
 
 --
 -- 已傾印資料表的索引
@@ -73,7 +67,7 @@ ALTER TABLE `users`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

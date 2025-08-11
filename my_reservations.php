@@ -1,12 +1,11 @@
 <?php
 session_start();
 require_once 'db.php'; // 這裡的 db.php 會建立 $pdo 連線
+require_once __DIR__ . '/includes/auth_guard.php'; // 引入共用守門
+require_login(); // 統一檢查：未登入 → 回首頁
 
-// 如果沒有登入就跳回首頁
-if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
-    exit;
-}
+// 統一 PHP 端時區
+date_default_timezone_set('Asia/Taipei');
 
 $message = '';
 $user_id = $_SESSION['user_id'];
@@ -38,11 +37,11 @@ if (!empty($reservations)) {
             $statusText = $res['status'];
         }
         $rows[] = [
-            'id' => $res['id'],
-            'pet_name' => htmlspecialchars($res['pet_name']),
-            'date' => htmlspecialchars($res['date']),
-            'time' => htmlspecialchars($res['time']),
-            'status' => htmlspecialchars($statusText),
+            'id' => htmlspecialchars($res['id'], ENT_QUOTES, 'UTF-8'),
+            'pet_name' => htmlspecialchars($res['pet_name'], ENT_QUOTES, 'UTF-8'),
+            'date' => htmlspecialchars($res['date'], ENT_QUOTES, 'UTF-8'),
+            'time' => htmlspecialchars($res['time'], ENT_QUOTES, 'UTF-8'),
+            'status' => htmlspecialchars($statusText, ENT_QUOTES, 'UTF-8'),
             'can_cancel' => ($res['status'] === 'booked' && strtotime($res['date']) > strtotime(date('Y-m-d')))
         ];
     }
@@ -52,6 +51,7 @@ if (!empty($reservations)) {
 if (count($rows) === 5) {
     $message = '（僅顯示最近 5 筆預約資料）';
 }
+$safe_message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
 ?>
 
 <!-- HTML 表單畫面 -->
@@ -63,8 +63,8 @@ if (count($rows) === 5) {
 </head>
 <body>
     <h2>我的預約紀錄</h2>
-    <?php if (!empty($message)): ?>
-        <p><?= htmlspecialchars($message)?></p>
+    <?php if (!empty($safe_message)): ?>
+        <p><?= ($safe_message)?></p>
     <?php endif; ?>
         <table>
         <thead>
