@@ -1,12 +1,8 @@
 <?php
 session_start();
 require_once 'db.php'; // 這裡的 db.php 會建立 $pdo 連線
-
-// 如果沒有登入就跳回首頁
-if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
-    exit;
-}
+require_once __DIR__ . '/includes/auth_guard.php'; // 引入共用守門
+require_login(); // 統一檢查：未登入 → 回首頁
 
 $message = '';
 $user_id = $_SESSION['user_id'];
