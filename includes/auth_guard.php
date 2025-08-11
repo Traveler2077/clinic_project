@@ -13,7 +13,7 @@ if (session_status() === PHP_SESSION_NONE) {
 function require_login(): void {
     if (!isset($_SESSION['user_id'])) {
         // 導回首頁
-        header('Location: index.php');
+        header('Location: /clinic_project/index.php');
         exit; // 停止後續程式
     }
 }
@@ -27,7 +27,7 @@ function require_login(): void {
 function require_admin(): void {
     // 檢查是否登入
     if (!isset($_SESSION['user_id'])) {
-        header('Location: index.php');
+        header('Location: /clinic_project/index.php');
         exit;
     }
 
