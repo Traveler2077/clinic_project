@@ -42,7 +42,7 @@ if (!empty($reservations)) {
             'pet_name' => htmlspecialchars($res['pet_name']),
             'date' => htmlspecialchars($res['date']),
             'time' => htmlspecialchars($res['time']),
-            'status' => $statusText,
+            'status' => htmlspecialchars($statusText),
             'can_cancel' => ($res['status'] === 'booked' && strtotime($res['date']) > strtotime(date('Y-m-d')))
         ];
     }
@@ -64,7 +64,7 @@ if (count($rows) === 5) {
 <body>
     <h2>我的預約紀錄</h2>
     <?php if (!empty($message)): ?>
-        <p><?= $message ?></p>
+        <p><?= htmlspecialchars($message)?></p>
     <?php endif; ?>
         <table>
         <thead>
