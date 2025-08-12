@@ -125,7 +125,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $del = $pdo->prepare("
                     DELETE FROM users 
-                    WHERE id = :id LIMIT 1
+                    WHERE id = :id 
+                    LIMIT 1
                 ");
                 $del->execute(['id' => $postId]);
                 $message = ($del->rowCount() > 0) ? '✅ 已刪除會員' : '⚠️ 找不到此會員或已被刪除';
@@ -148,7 +149,12 @@ if (isset($_GET['msg']) && $message === '') {
 // ---- 若 action=edit，載入單筆資料 ----
 if ($action === 'edit' && $id > 0) {
     try {
-        $one = $pdo->prepare("SELECT * FROM users WHERE id = :id LIMIT 1");
+        $one = $pdo->prepare("
+            SELECT * 
+            FROM users 
+            WHERE id = :id 
+            LIMIT 1
+        ");
         $one->execute(['id' => $id]);
         $editRow = $one->fetch(PDO::FETCH_ASSOC);
     } catch (Throwable $e) {
@@ -167,9 +173,8 @@ try {
 }
 
 $totalPages = max(1, (int)ceil($total / $perPage));
-if ($page > $totalPages) {
+if ($page > $totalPages)
     $page = $totalPages;
-}
 $offset = ($page - 1) * $perPage;
 $hasPrev = ($page > 1);
 $hasNext = ($page < $totalPages);
@@ -227,6 +232,7 @@ if ($action === 'edit' && $editRow) {
     $selAdmin    = ($editRow['role'] === 'admin')  ? 'selected' : '';
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -257,19 +263,19 @@ if ($action === 'edit' && $editRow) {
     </div>
     <div>
       <label>寵物名：</label>
-      <input type="text" name="pet_name" value="<?= $safePet ?>">
+      <input type="text" name="pet_name" value="<?= $safePet ?>"required>
     </div>
     <div>
       <label>Email：</label>
-      <input type="email" name="email" value="<?= $safeEmail ?>">
+      <input type="email" name="email" value="<?= $safeEmail ?>"required>
     </div>
     <div>
       <label>電話：</label>
-      <input type="text" name="phone" value="<?= $safePhone ?>">
+      <input type="text" name="phone" value="<?= $safePhone ?>"required>
     </div>
     <div>
       <label>地址：</label>
-      <input type="text" name="address" value="<?= $safeAddress ?>" required>
+      <input type="text" name="address" value="<?= $safeAddress ?>" >
     </div>
     <div>
       <label>角色：</label>
