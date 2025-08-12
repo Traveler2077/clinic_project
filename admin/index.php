@@ -1,10 +1,8 @@
 <?php
 // 僅引入守門（含 session_start），並限制管理員
+require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../includes/auth_guard.php';
 require_admin();
-
-// 連線
-require_once __DIR__ . '/../db.php';
 
 // 統一 PHP 端時區
 date_default_timezone_set('Asia/Taipei');
@@ -21,8 +19,15 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute(['today' => $today]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-$todayCount = $row ? (int)$row['cnt'] : 0;
+
+if ($row) {
+    $todayCount = (int)$row['cnt'];
+} else {
+    $todayCount = 0;
+}
+
 ?>
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -32,7 +37,7 @@ $todayCount = $row ? (int)$row['cnt'] : 0;
 <body>
   <h1>後台控制台</h1>
 
-  <p>今日預約數（booked）：<?= htmlspecialchars((string)$todayCount, ENT_QUOTES, 'UTF-8') ?></p>
+  <p>今日預約數(booked):<?= htmlspecialchars((string)$todayCount, ENT_QUOTES, 'UTF-8') ?></p>
   <p>日期：<?= htmlspecialchars($today, ENT_QUOTES, 'UTF-8') ?></p>
 
   <p>
