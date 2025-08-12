@@ -26,7 +26,6 @@ if (isset($_SESSION['name'])) {
 } else {
     $name_value = '';
 }
-$safe_name = htmlspecialchars($name_value, ENT_QUOTES, 'UTF-8');
 
 // 建立時段陣列
 $times = [];
@@ -133,6 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+$safe_name = htmlspecialchars($name_value, ENT_QUOTES, 'UTF-8');
 $safe_color = htmlspecialchars($color, ENT_QUOTES, 'UTF-8');
 $safe_message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
 $safe_minDate = htmlspecialchars($minDate, ENT_QUOTES, 'UTF-8');
